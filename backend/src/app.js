@@ -8,6 +8,9 @@ const readingRoutes = require('./routes/reading.routes');
 const waterRoutes = require('./routes/water.routes');
 const { notFound, errorHandler } = require('./middleware/error.middleware');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
+
 const app = express();
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
@@ -17,6 +20,8 @@ app.use(cookieParser());
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/auth', authRoutes);
 app.use('/api', plantRoutes);
