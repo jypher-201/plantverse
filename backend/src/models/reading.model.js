@@ -29,4 +29,15 @@ async function getRecentReadings(plantId, limit = 10) {
   return result.rows;
 }
 
-module.exports = { getLatestReading, insertReading, getRecentReadings };
+async function getReadingsSince(plantId, hours) {
+  const result = await pool.query(
+    `SELECT moisture_level, created_at FROM readings
+     WHERE plant_id = $1
+       AND created_at >= NOW() - make_interval(hours => $2::int)
+     ORDER BY created_at ASC`,
+    [plantId, hours]
+  );
+  return result.rows;
+}
+
+module.exports = { getLatestReading, insertReading, getRecentReadings, getReadingsSince };

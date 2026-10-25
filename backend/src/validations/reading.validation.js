@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const readingRules = [
   body('device_key').isString().notEmpty().withMessage('device_key is required'),
@@ -13,4 +13,12 @@ const readingRules = [
     .toInt(),
 ];
 
-module.exports = { readingRules };
+const historyRules = [
+  query('hours')
+    .optional()
+    .isInt({ min: 1, max: 72 })
+    .withMessage('hours must be a whole number from 1 to 72')
+    .toInt(),
+];
+
+module.exports = { readingRules, historyRules };
