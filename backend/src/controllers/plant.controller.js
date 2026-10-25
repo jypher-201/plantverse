@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const { findPlantByUserId, createPlant } = require('../models/plant.model');
+const { getRecentReadings } = require('../models/reading.model');
+const { calculateMood } = require('../utils/mood');
 
 async function create(req, res, next) {
   try {
@@ -27,8 +29,13 @@ async function get(req, res, next) {
       return res.status(404).json({ error: 'No plant yet' });
     }
 
+    const recent = await getRecentReadings(plant.id);
+    const mood = calculateMood(recent, plant.last_watered_at);
+
     res.json({
       name: plant.name,
+      ...mood,
+      lastReadingAt: recent[0]?.created_at ?? null,
       lastWateredAt: plant.last_watered_at,
       createdAt: plant.created_at,
     });

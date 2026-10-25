@@ -18,4 +18,15 @@ async function insertReading(plantId, moistureLevel, rawValue) {
   );
 }
 
-module.exports = { getLatestReading, insertReading };
+async function getRecentReadings(plantId, limit = 10) {
+  const result = await pool.query(
+    `SELECT moisture_level, created_at FROM readings
+     WHERE plant_id = $1
+     ORDER BY created_at DESC
+     LIMIT $2`,
+    [plantId, limit]
+  );
+  return result.rows;
+}
+
+module.exports = { getLatestReading, insertReading, getRecentReadings };
