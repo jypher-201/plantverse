@@ -22,4 +22,15 @@ async function recordWatering(plantId, source) {
   }
 }
 
-module.exports = { recordWatering };
+async function getWaterHistory(plantId, limit = 50) {
+  const result = await pool.query(
+    `SELECT id, source, created_at FROM water_events
+     WHERE plant_id = $1
+     ORDER BY created_at DESC
+     LIMIT $2`,
+    [plantId, limit]
+  );
+  return result.rows;
+}
+
+module.exports = { recordWatering, getWaterHistory };

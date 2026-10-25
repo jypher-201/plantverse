@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth.routes');
 const plantRoutes = require('./routes/plant.routes');
 const readingRoutes = require('./routes/reading.routes');
+const waterRoutes = require('./routes/water.routes');
 const { notFound, errorHandler } = require('./middleware/error.middleware');
 
 const app = express();
@@ -20,6 +21,7 @@ app.get('/health', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/api', plantRoutes);
 app.use('/api', readingRoutes);
+app.use('/api', waterRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
