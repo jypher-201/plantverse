@@ -15,4 +15,9 @@ async function createPlant(userId, name, deviceKey) {
   return result.rows[0];
 }
 
-module.exports = { findPlantByUserId, createPlant };
+async function findPlantByDeviceKey(deviceKey) {
+  const result = await pool.query('SELECT * FROM plants WHERE device_key = $1', [deviceKey]);
+  return result.rows[0];
+}
+
+module.exports = { findPlantByUserId, createPlant, findPlantByDeviceKey };
