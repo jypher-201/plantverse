@@ -34,6 +34,7 @@ async function get(req, res, next) {
 
     res.json({
       name: plant.name,
+      deviceKey: plant.device_key,
       ...mood,
       lastReadingAt: recent[0]?.created_at ?? null,
       lastWateredAt: plant.last_watered_at,

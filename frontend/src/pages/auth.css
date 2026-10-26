@@ -67,3 +67,21 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.key-box {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0 14px;
+  padding: 14px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  word-break: break-all;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed var(--pink);
+  border-radius: 14px;
+  user-select: all;
+}
+.hint { margin: 0 0 16px; color: var(--muted); font-size: 16px; line-height: 1.4; }
+.btn-stack { display: flex; flex-direction: column; gap: 10px; width: 100%; }
