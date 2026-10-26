@@ -5,6 +5,7 @@ import Pair from './Pair';
 import Dashboard from './Dashboard';
 import './landing.css';
 import './auth.css';
+import ServerDown from '../components/ServerDown';
 
 export default function Home({ onLogout }) {
   const [view, setView] = useState('loading'); // 'loading' | 'pair' | 'ready' | 'error'
@@ -31,22 +32,15 @@ export default function Home({ onLogout }) {
     setAttempt((a) => a + 1);
   }
 
-  if (view === 'pair') return <Pair onDone={() => setView('ready')} onLogout={onLogout} />;
+    if (view === 'pair') return <Pair onDone={() => setView('ready')} onLogout={onLogout} />;
   if (view === 'ready') return <Dashboard onLogout={onLogout} />;
+  if (view === 'error') return <ServerDown message={message} onRetry={retry} />;
 
   return (
     <div className="landing auth-page">
       <div className="auth-card glass">
-        <PlantCharacter state={view === 'error' ? 'thirsty' : 'okay'} size={120} />
-        {view === 'error' ? (
-          <>
-            <h1>Can't reach the server</h1>
-            <p className="auth-sub">{message}</p>
-            <button className="btn btn-block" onClick={retry}>Try again</button>
-          </>
-        ) : (
-          <p className="auth-sub">Looking for your plant...</p>
-        )}
+        <PlantCharacter state="okay" size={120} />
+        <p className="auth-sub">Looking for your plant...</p>
       </div>
     </div>
   );

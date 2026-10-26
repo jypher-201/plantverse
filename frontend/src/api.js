@@ -7,12 +7,23 @@ export function setAccessToken(token) {
   accessToken = token;
 }
 
+// fetch() throws when the server cannot be reached at all; turn that into a readable error
+async function request(url, options) {
+  try {
+    return await fetch(url, options);
+  } catch {
+    const err = new Error('Cannot reach the server. Check that the backend is running and your network works.');
+    err.status = 0;
+    throw err;
+  }
+}
+
 function send(path, { method = 'GET', body } = {}) {
   const headers = {};
   if (body) headers['Content-Type'] = 'application/json';
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 
-  return fetch(API_URL + path, {
+  return request(API_URL + path, {
     method,
     headers,
     credentials: 'include', // lets the refresh-token cookie travel
@@ -22,7 +33,7 @@ function send(path, { method = 'GET', body } = {}) {
 
 // Uses the refresh cookie to get a new 15-minute access token
 export async function refreshAccessToken() {
-  const res = await fetch(`${API_URL}/auth/refresh`, {
+  const res = await request(`${API_URL}/auth/refresh`, {
     method: 'POST',
     credentials: 'include',
   });
