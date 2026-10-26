@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { api, setAccessToken } from '../api';
+import PlantCharacter from '../components/PlantCharacter';
+import './landing.css';
+import './auth.css';
 
-export default function Auth({ onLoggedIn }) {
-  const [mode, setMode] = useState('login'); // 'login' or 'register'
+export default function Auth({ onLoggedIn, onBack, initialMode = 'login' }) {
+  const [mode, setMode] = useState(initialMode); // 'login' or 'register'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,20 +29,30 @@ export default function Auth({ onLoggedIn }) {
     }
   }
 
-  return (
-    <div style={{ maxWidth: 360, margin: '60px auto', padding: 24 }}>
-      <h1>PlantVerse</h1>
-      <h2>{mode === 'login' ? 'Log in' : 'Create account'}</h2>
+  function switchMode() {
+    setMode(mode === 'login' ? 'register' : 'login');
+    setError('');
+  }
 
-      <form onSubmit={handleSubmit}>
+  return (
+    <div className="landing auth-page">
+      <button type="button" className="btn btn-ghost back" onClick={onBack}>← Back</button>
+
+      <form className="auth-card glass" onSubmit={handleSubmit}>
+        <PlantCharacter state={error ? 'thirsty' : 'okay'} size={120} />
+        <h1>{mode === 'login' ? 'Welcome back' : 'Create your account'}</h1>
+        <p className="auth-sub">
+          {mode === 'login' ? 'Your plant has been waiting.' : 'Then we will set up your plant.'}
+        </p>
+
         <label>
           Email
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
             required
-            style={{ display: 'block', width: '100%', marginBottom: 12 }}
           />
         </label>
         <label>
@@ -48,27 +61,24 @@ export default function Auth({ onLoggedIn }) {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             required
-            style={{ display: 'block', width: '100%', marginBottom: 12 }}
           />
         </label>
 
-        {error && <p style={{ color: 'crimson' }}>{error}</p>}
+        {error && <p className="auth-error" role="alert">{error}</p>}
 
-        <button type="submit" disabled={busy}>
+        <button className="btn btn-block" type="submit" disabled={busy}>
           {busy ? 'Please wait...' : mode === 'login' ? 'Log in' : 'Register'}
         </button>
-      </form>
 
-      <p>
-        {mode === 'login' ? 'No account yet? ' : 'Already registered? '}
-        <button
-          type="button"
-          onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}
-        >
-          {mode === 'login' ? 'Create one' : 'Log in'}
-        </button>
-      </p>
+        <p className="switch">
+          {mode === 'login' ? 'No account yet? ' : 'Already registered? '}
+          <button type="button" className="link" onClick={switchMode}>
+            {mode === 'login' ? 'Create one' : 'Log in'}
+          </button>
+        </p>
+      </form>
     </div>
   );
 }
