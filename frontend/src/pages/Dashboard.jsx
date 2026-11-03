@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api';
 import PlantCharacter from '../components/PlantCharacter';
 import ServerDown from '../components/ServerDown';
+import HistoryPanel from '../components/HistoryPanel';
 import './landing.css';
 import './auth.css';
 import './dashboard.css';
+
 
 const BAR = {
   Thriving: '#2bc46a',
@@ -83,23 +85,27 @@ export default function Dashboard({ onLogout }) {
   const statusText = waiting ? 'Not connected yet' : plant.online ? 'Online' : 'Offline';
 
   return (
-    <div className="landing">
+    <div className="landing dash-page">
       <header className="nav">
         <span className="logo">PlantVerse</span>
         <button className="btn btn-ghost" onClick={onLogout}>Log out</button>
       </header>
 
-      <main className="dash">
-        {error && (
-          <div className="banner" role="alert">
-            Connection problem. Showing the last data we received.
-          </div>
-        )}
+      {error && (
+        <div className="banner" role="alert">
+          Connection problem. Showing the last data we received.
+        </div>
+      )}
 
+      <main className="dash">
         <section className="glass plant-card">
-          <div className="glow" />
           <h1>{plant.name}</h1>
-          <PlantCharacter state={shownState} size={240} />
+
+          <div className="plant-stage">
+            <div className="glow" />
+            <PlantCharacter state={shownState} size={240} />
+          </div>
+
           <div className="badge">{waiting ? 'Waiting for data' : plant.state}</div>
 
           {waiting ? (
@@ -126,33 +132,33 @@ export default function Dashboard({ onLogout }) {
         </section>
 
         <section className="side">
-          <div className="glass info">
-            <h2>Sensor</h2>
-            <dl>
-              <div>
-                <dt>Status</dt>
-                <dd><span className={`pill ${statusClass}`}>{statusText}</span></dd>
-              </div>
-              <div>
-                <dt>Soil moisture</dt>
-                <dd>{plant.avgMoisture === null ? '-' : `${plant.avgMoisture}%`}</dd>
-              </div>
-              <div>
-                <dt>Last reading</dt>
-                <dd>{timeAgo(plant.lastReadingAt)}</dd>
-              </div>
-              <div>
-                <dt>Last watered</dt>
-                <dd>{timeAgo(plant.lastWateredAt)}</dd>
-              </div>
-            </dl>
+          <div className="tiles">
+            <div className="tile glass">
+              <span>Status</span>
+              <strong><span className={`pill ${statusClass}`}>{statusText}</span></strong>
+            </div>
+            <div className="tile glass">
+              <span>Soil moisture</span>
+              <strong>{plant.avgMoisture === null ? '-' : `${plant.avgMoisture}%`}</strong>
+            </div>
+            <div className="tile glass">
+              <span>Last reading</span>
+              <strong>{timeAgo(plant.lastReadingAt)}</strong>
+            </div>
+            <div className="tile glass">
+              <span>Last watered</span>
+              <strong>{timeAgo(plant.lastWateredAt)}</strong>
+            </div>
           </div>
 
+          <HistoryPanel />
+
           <div className="glass info">
-            <h2>Device key</h2>
+            <div className="info-head">
+              <h2>Device key</h2>
+              <button className="btn btn-ghost small" onClick={copyKey}>{copied ? 'Copied!' : 'Copy'}</button>
+            </div>
             <div className="key-box">{plant.deviceKey}</div>
-            <p className="hint">The ESP32 sends this key with every reading. Keep it private.</p>
-            <button className="btn btn-ghost" onClick={copyKey}>{copied ? 'Copied!' : 'Copy key'}</button>
           </div>
         </section>
       </main>
